@@ -6,7 +6,7 @@ $config = array(
     'TMPL_STRIP_SPACE'     =>true,
     'OUTPUT_ENCODE'        =>true, // 页面压缩输出
 
-    'MODULE_ALLOW_LIST'    =>    array('Home',),
+    'MODULE_ALLOW_LIST'    =>    array('Home','Admin'),
     'DEFAULT_MODULE'       =>    'Home',  // 默认模块
 
     //加密混合值
@@ -23,19 +23,26 @@ $config = array(
     //'SESSION_TYPE' => 'Redis',
     //session保存类型
 
-    'SESSION_PREFIX' => 'sess_', //session前缀
-    'REDIS_HOST' => '192.168.1.106', //REDIS服务器地址
-    'REDIS_PORT' => 6379, //REDIS连接端口号
-    'SESSION_EXPIRE' => 3600, //SESSION过期时间
+//    'SESSION_PREFIX' => 'sess_', //session前缀
+//    'REDIS_HOST' => '192.168.1.106', //REDIS服务器地址
+//    'REDIS_PORT' => 6379, //REDIS连接端口号
+//    'SESSION_EXPIRE' => 3600, //SESSION过期时间
     // array host port timeout auth
     // 
-    'AD_REDIS'    =>    array('120.24.232.6',6380,5,''), //6380
-
-    'PRO_REDIS'    =>    array('120.24.232.6',6381,5,''), //产品
-    'TOKEN_REDIS'    =>    array('120.24.232.6',6382,5,''), //微信token 及相关
+//    'AD_REDIS'    =>    array('120.24.232.6',6380,5,''), //6380
+//
+//    'PRO_REDIS'    =>    array('120.24.232.6',6381,5,''), //产品
+//    'TOKEN_REDIS'    =>    array('120.24.232.6',6382,5,''), //微信token 及相关
     //////////////////////////////////////////////////
     'TAGLIB_BUILD_IN' => 'cx',//芝麻乐标签库
     //'TAGLIB_PRE_LOAD' => '',//芝麻乐命名范围
+
+    'weixin' => array(
+        'red_token' =>'',
+        'encodingaeskey' => '',
+        'appid' => '',
+        'appsecret'=>''
+    )
 
 );
 

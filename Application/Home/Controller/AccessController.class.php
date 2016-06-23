@@ -6,8 +6,7 @@ use Org\Util\File;
 class AccessController extends BaseController
 {
    function index(){
-       $type = intval($_GET["type"]);
-       $weObj = $this->initWechat($type);
+       $weObj = $this->initWechat();
        $weObj->valid();
        $type = $weObj->getRev()->getRevType();
        File::write_file(APP_PATH.'log/test.log', "city={$_GET['type']}&type={$type}&data={$weObj->getRevContent()}\r\n",'a+');

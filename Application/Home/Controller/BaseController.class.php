@@ -7,7 +7,6 @@ use Weixin\MyWechat;
 class BaseController extends Controller {
 
     public $wechat = null;
-    public $type = 0;
     public $from = 0;
 
     /**
@@ -15,12 +14,7 @@ class BaseController extends Controller {
      */
     public function _initialize(){
         $this->openid = '';
-        $this->type = I('request.type',0,'intval');
         $this->from = I('request.from',0,'intval');
-
-        if(empty($this->type)){
-            die('NO FOUND CITY');
-        }
 
         if($this->from != 4 && strtolower(CONTROLLER_NAME) != 'access'){
             $this->initPage($this->type, $this->from);
@@ -28,7 +22,6 @@ class BaseController extends Controller {
         }else{
             $this->openid = 'obZe1uAPFrT9R46w_aYoQbEOf6Ns';
         }
-
 
         if( !$this->openid){
             die('No Found Openid.');
@@ -41,13 +34,13 @@ class BaseController extends Controller {
      * @param  int $type 城市ID
      * @return object 微信公共类的对象
      */
-    protected function initWechat($type)
+    protected function initWechat()
     {
         if ($this->wechat) {
             return $this->wechat;
         }
 
-        $cityInfo = D('City')->get_city($type);
+        $cityInfo = C('weixin');
         if(empty($cityInfo)){
             die('No Found Weixin Option.');
         }
@@ -72,7 +65,7 @@ class BaseController extends Controller {
             switch($msgType){
                 case "text" :
                     $content = $weObj->getRevContent();
-                    $msg_data = D('CityAutoReply')->get_reply_msg($this->type, 'text', $content);
+                    $msg_data = D('CityAutoReply')->get_reply_msg( 'text', $content);
                     if($msg_data){
                         if($msg_data['reply_type'] == 'text'){
                             $weObj->text($msg_data['reply_content'])->reply();
@@ -87,18 +80,17 @@ class BaseController extends Controller {
                 case "subscribe" :
                     $openid =  $weObj->getRevFrom();
                     $user = D('Users')->get_user($openid);
-                    session('openid'.$this->type, $openid);
+                    session('openid', $openid);
 
-                    cookie("FUserId" . $this->type, $openid, time() + 1800);
+                    cookie("FUserId", $openid, time() + 1800);
                     //设置一个虚拟的设备id，不然签到无法顺利插入数据
                     if($user){
                         $data = array('is_subscribe'=>1, 'subcribe_time'=>time());
                         D('Users')->update_user($openid, $data);
                     }else {
-                        $uinfo = $this->getUserInfo($this->type);
+                        $uinfo = $this->getUserInfo();
                         $data = array(
                             'openid' => $openid,
-                            'cityid' => $this->type,
                             'is_subscribe' => 1,
                             'subcribe_time' => time(),
                             'create_time' => time()
@@ -121,7 +113,7 @@ class BaseController extends Controller {
                         D('Users')->init_user($data);
                     }
 
-                    $msg_data = D('CityAutoReply')->get_reply_msg($this->type, 'event', 'subscribe');
+                    $msg_data = D('CityAutoReply')->get_reply_msg( 'event', 'subscribe');
 
                     $weObj->text($msg_data?$msg_data['reply_content']:$msg1)->reply();
                     die();
@@ -145,9 +137,9 @@ class BaseController extends Controller {
      * @param bool $ajax 是否是ajax请求,是的话返回数据
      * @return array|null 直接渲染模板 或 返回分享接口的凭据信息
      */
-    protected function getShareSign($type,$ajax=false)
+    protected function getShareSign($ajax=false)
     {
-        $wechat = $this->initWechat($type);
+        $wechat = $this->initWechat();
         $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
         $url = "$protocol$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
         $signPackage = $wechat->getJsSign($url);
@@ -170,59 +162,14 @@ class BaseController extends Controller {
      * @param int $type 城市ID
      * @param int $from 来源 1:摇一摇进来的, 2:菜单进来的, 3:分享链接进来的, 4:用来调试的
      */
-    protected function initPage($type,$from){
+    protected function initPage(){
         /*******************初始化******/
-        $wechat = $this->initWechat($type);
+        $wechat = $this->initWechat();
 
-        $FUserId = cookie('FUserId' . $type);
-        $FDeviceId = cookie('FDeviceId' . $type) ;
+        $FUserId = cookie('FUserId');
+        $openid = session('openid');
 
-        switch ($from) {
-            case 1:
-                //如果cookie里的FDeviceId为空（没有进去过），或者为notNeedDeviceid（从公众号点击会设置上，要重设)
-                /**
-                 * @shengyue 2016-05-26 session改成redis
-                 */
 
-                if (
-                    empty($FDeviceId) ||
-                    empty($FUserId) ||
-                    $FDeviceId == "notNeedDeviceid" ||
-                    empty(session("openid".$type)) ||
-                    !(session("isYaoYao" . $type) && session("isYaoYao" . $type) === true)
-                )
-                {
-                    $ticket = $_GET['ticket'];
-                    if (empty($ticket)) {  //ticket 参数为空
-                        $error = "摇一摇设备无法获取票据";
-                        break;
-                    }
-                    //从微信摇一摇接口获取设备id及用户id
-                    $user = $wechat->getShakeInfoShakeAroundUser($ticket);
-                    if (empty($user)) {
-                        File::write_file(APP_PATH .'log/error.log', "摇一摇空返回错误: ticket-" . $ticket . "--errCode: " . $wechat->errCode ."--errMsg: " .$wechat->errMsg. "--city: ".$type,'a+');
-                        break;
-                    }
-                    //记录用户openid
-                    //$user = json_decode($user_data);
-                    $FUserId = $user['data']['openid'];
-                    $uuid = $user['data']['beacon_info']['uuid'];
-                    if (empty($FUserId)) {
-                        File::write_file(APP_PATH .'log/error.log', "摇一摇空openid,ticket: " . $ticket . "--errCode: " . $wechat->errCode ."--errMsg: " .$wechat->errMsg. "--city: ".$type,'a+');
-                        $error = "票据已失效,请重新摇一摇";
-                        break;
-                    }
-                    /**
-                     * @shengyue 2016-05-26 session改成redis
-                     */
-                    session("openid".$type, $FUserId);
-                    session("isYaoYao" . $type, true);
-                    cookie('FUserId' . $type, $FUserId, time() + 1800);
-                    cookie('FDeviceId' . $type, $uuid, time() + 1800);
-                }
-                break;
-            case 2:
-            case 3:
                 /**
                  * @shengyue 2016-05-26 session改成redis
                  */
@@ -231,17 +178,16 @@ class BaseController extends Controller {
                 if(true)
                 {
                     //用户授权
-                    $info = $this->authorize($type);
+                    $info = $this->authorize();
                     if ($info) {
                         $FUserId = $info['openid'];
-                        cookie("FUserId" . $type, $info['openid'], time() + 1800);
+                        cookie("FUserId" , $info['openid'], time() + 1800);
                         //设置一个虚拟的设备id，不然签到无法顺利插入数据
-                        cookie('FDeviceId' . $type, "notNeedDeviceid", time() + 1800);
                         // $_SESSION["openid".$type] = $FUserId;
-                        session("openid".$type, $FUserId);
+                        session("openid", $FUserId);
 
                         // 获取微信用户信息
-                        $weObj = $this->initWechat($type);
+                        $weObj = $this->initWechat();
                         $openid = $info["openid"];
                         $access_token = $info["access_token"];
                         $info = $weObj->getOauthUserinfo($access_token, $openid);
@@ -253,7 +199,6 @@ class BaseController extends Controller {
                         `wx_remark`, `wx_groupid`, `tag_list`, `beacon_id`, `is_subscribe`, `subcribe_time`, `unsubcribe_time`, `create_time`*/
                         $user = [
                             'openid' =>$openid,
-                            'cityid' => $this->type,
                             'wx_name' =>$info['nickname'],
                             'unionid' =>$info['unionid'],
                             'wx_sex' =>$info['sex'],
@@ -275,20 +220,6 @@ class BaseController extends Controller {
                         $error = "网络繁忙，请稍后再试";
                     }
                 }
-                else
-                {
-                    cookie('FDeviceId' . $type, "notNeedDeviceid", time() + 1800);
-                }
-                /**
-                 * @shengyue 2016-05-6 session改成redis
-                 */
-                //$_SESSION["isYaoYao" . $type] = false;
-                session("isYaoYao" . $type, false);
-                break;
-            default:
-                $error = "访问来源无法确定".$from;
-                break;
-        }
 
         if (empty($FUserId)) {
             header("Content-type: text/html; charset=utf-8");
@@ -296,10 +227,6 @@ class BaseController extends Controller {
             exit($context);
         }
 
-
-        // 黑名单
-//        $this->blackUser($FUserId,$type);
-//        /**************/
     }
 
 
@@ -308,10 +235,10 @@ class BaseController extends Controller {
      * @param int $type 城市ID
      * @return bool 获取授权access_token 是否成功
      */
-    protected function authorize($type)
+    protected function authorize()
     {
 
-        $weObj = $this->initWechat($type);
+        $weObj = $this->initWechat();
 
         if (isset($_GET['code'])) {
             $info = $weObj->getOauthAccessToken();
@@ -320,7 +247,7 @@ class BaseController extends Controller {
                  * @ShengYue 2016-05-26 session改成使用redis
                  */
                 $expire = $info["expires_in"] ? intval($info["expires_in"]) - 100 : 3600;
-                $oauthname = "oauth_access_token" . $type . $info["openid"];
+                $oauthname = "oauth_access_token" . $info["openid"];
                 //$_SESSION[$oauthname] = $info['access_token'];
                 session($oauthname, $info['access_token'], $expire);
                 return $info;
@@ -339,15 +266,15 @@ class BaseController extends Controller {
     }
 
     /*获取用户的详细信息*/
-    protected function getUserInfo($type){
+    protected function getUserInfo(){
         /**
          * @shengyue 2016-05-26 session改成redis
          */
         // $openid = $_SESSION["openid".$type];
-        $openid = session("openid".$type);
-        if(empty($type) || empty($openid)) return false;
+        $openid = session("openid");
+        if( empty($openid)) return false;
 
-        $weObj = $this->initWechat($type);
+        $weObj = $this->initWechat();
         $uinfo = $weObj->getUserInfo($openid);
 
         return $uinfo;
