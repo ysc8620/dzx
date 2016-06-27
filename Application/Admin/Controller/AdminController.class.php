@@ -4,6 +4,7 @@ namespace Admin\Controller;
 
 use Think\Controller;
 use Think\Page;
+use Org\Util\File;
 
 class AdminController extends BaseController
 {
@@ -78,5 +79,29 @@ class AdminController extends BaseController
             $this->assign('user', $admin);
         }
         $this->display();
+    }
+
+
+    public function set(){
+        if(IS_POST){
+            $config = (array)$_POST['config'];
+            arr2file(APP_PATH .'/Runtime/Conf/config.php',$config);
+            @unlink(APP_PATH .'/Runtime/common~runtime.php');
+            return $this->success('保存成功', tsurl('admin/set'));
+        }
+        $config = (array)@include(APP_PATH .'/Runtime/Conf/config.php');
+        $this->assign('config', $config);
+        $this->display();
+    }
+
+    //清除系统缓存AJAX
+    public function del(){
+        header("Content-Type: text/html; charset=UTF-8");
+        @unlink(APP_PATH .'/Runtime/common~runtime.php');
+        if(!File::empty_dir(APP_PATH .'/Runtime/Data/_fields')){File::del_dir(APP_PATH.'/Runtime/Data/_fields');}
+        if(!File::empty_dir(APP_PATH .'/Runtime/Temp')){File::del_dir(APP_PATH.'/Runtime/Temp');}
+        if(!File::empty_dir(APP_PATH .'/Runtime/Cache')){File::del_dir(APP_PATH.'/Runtime/Cache');}
+        if(!File::empty_dir(APP_PATH .'/Runtime/Logs')){File::del_dir(APP_PATH.'/Runtime/Logs');}
+        echo('清除成功');
     }
 }
