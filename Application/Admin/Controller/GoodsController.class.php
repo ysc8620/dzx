@@ -24,4 +24,13 @@ class GoodsController extends BaseController
         $this->display();
     }
 
+    public function edit(){
+        if(IS_POST){
+
+            print_r($_POST);die();
+        }
+
+        $this->display();
+    }
+
 }
