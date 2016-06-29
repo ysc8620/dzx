@@ -28,7 +28,7 @@ window.onresize = setRootFontSize;
     <div class="del_img">
         <div class="img"><img src="{$users.wx_pic}" width="100%" height="100%"></div>
         <div class="text">
-        <p><if condition="$id gt 0">{$users.wx_name}积分<else/></if>：{$users.credit}<span class="gridItem_fl"></span>&nbsp;&nbsp;<span><if condition="$id eq '0'"><a id="">立即兑换</a></if></span></p>
+        <p><if condition="$id gt 0">{$users[wx_name]}的积分<else/>我的</if>：{$users.credit}<span class="gridItem_fl"></span>&nbsp;&nbsp;<span><if condition="$id eq '0'"><a id="">立即兑换</a></if></span></p>
         <if condition="$id gt 0 AND $id neq $users['id']"><p><span class="icon">给TA1分</span></p></if>
         </div>
     </div>
