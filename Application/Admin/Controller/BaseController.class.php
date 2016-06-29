@@ -18,4 +18,12 @@ class BaseController extends Controller {
         $this->assign('admin', $this->admin);
     }
 
+    public function getJson(){
+        return [
+            'msg_code' => 1000,
+            'msg_content' => '',
+            'msg_data' => ''
+        ];
+    }
+
 }

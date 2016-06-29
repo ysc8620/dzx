@@ -9,6 +9,7 @@ class BaseController extends Controller {
     public $wechat = null;
     public $from = 0;
     public $openid = 0;
+    public $users = '';
 
     /**
      * 初始化操作
@@ -26,6 +27,11 @@ class BaseController extends Controller {
 
         if( !$this->openid){
             die('No Found Openid.');
+        }
+
+        $this->users = M('users')->where(array('openid'=>$this->openid))->find();
+        if(empty($this->users)){
+            die('No Found Users.');
         }
     }
 
@@ -279,5 +285,11 @@ class BaseController extends Controller {
         return $uinfo;
     }
 
-
+    public function getJson(){
+        return [
+            'msg_code' => 1000,
+            'msg_content' => '',
+            'msg_data' => ''
+        ];
+    }
 }
