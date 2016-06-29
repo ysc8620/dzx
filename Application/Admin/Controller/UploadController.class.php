@@ -52,7 +52,7 @@ class UploadController extends BaseController
 //            import("ORG.Util.Image");
 //            Image::thumb($uppath.$uploadList[0]['savename'],$uppath_s.$uploadList[0]['savename'],'',C('upload_thumb_w'),C('upload_thumb_h'),true);
 //        }
-        echo "<script type='text/javascript'>parent.document.getElementById('".$fileback."').value='".$sid.'/'.$info['upthumb']['savepath'].$info['upthumb']['savename']."';</script>";
+        echo "<script type='text/javascript'>parent.document.getElementById('".$fileback."').value='/uploads/".$sid.'/'.$info['upthumb']['savepath'].$info['upthumb']['savename']."';</script>";
         echo '文件上传成功　[<a href="?s=/admin/upload/show/sid/'.$sid.'/fileback/'.$fileback.'">重新上传</a>]';
         //<a href="'.$uppath.$uploadList[0]['savename'].'" target="_blank"><font color=red>'.$uploadList[0]['savename'].'</font></a>
         echo '</div>';

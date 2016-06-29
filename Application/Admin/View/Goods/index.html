@@ -3,9 +3,9 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>微信用户管理-美联美客后台系统</title>
-    <meta name="keywords" content="微信用户管理">
-    <meta name="description" content="微信用户管理">
+    <title>商品列表-乐鲜生后台系统</title>
+    <meta name="keywords" content="商品列表">
+    <meta name="description" content="商品列表">
     <link rel="shortcut icon" href="favicon.ico">
     <link href="__PUBLIC__/admin/css/bootstrap.min.css?v=3.3.5" rel="stylesheet">
     <link href="__PUBLIC__/admin/css/font-awesome.css?v=4.4.0" rel="stylesheet">
@@ -21,7 +21,7 @@
         <div class="col-sm-12">
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
-                    <h5>微信用户列表</h5>
+                    <h5>商品列表</h5>
                     <!--
                     <div class="ibox-tools"> <a class="collapse-link"> <i class="fa fa-chevron-up"></i> </a> <a class="dropdown-toggle" data-toggle="dropdown" href="table_data_tables.html#"> <i class="fa fa-wrench"></i> </a>
                       <ul class="dropdown-menu dropdown-user">
@@ -52,10 +52,10 @@
                                         <td>{$item.goods_name}</td>
                                         <td>{$item.credit}</td>
                                         <td>{$item.sku}</td>
-                                        <td>{$item['create_time']|}</td>
-                                        <td>{:timestampToDate()}</td>
+                                        <td>{$item['create_time']|date='Y-m-d H:i:s',###}</td>
+                                        <td><if condition="$item.status eq 1">正常<else/>下架</if></td>
                                         <td class="center">
-                                            <a href="{:U('/users/userview', ['id' => $item['id']])}"><i class="fa fa-check text-navy"></i>详细</a>
+                                            <a href="{:U('goods/edit', ['id' => $item['id']])}"><i class="fa fa-check text-navy"></i>详细</a>
                                         </td>
                                     </tr>
                                 </volist>
