@@ -2,7 +2,7 @@
 
 namespace Admin\Controller;
 
-use Think\Controller;
+
 use Think\Page;
 
 class GoodsController extends BaseController
