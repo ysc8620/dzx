@@ -71,6 +71,13 @@ class GoodsController extends BaseController
         $show = $Page->show();// 分页显示输出
         // 进行分页数据查询 注意limit方法的参数要使用Page类的属性
         $list = $city->order('create_time DESC')->limit($Page->firstRow . ',' . $Page->listRows)->select();
+        foreach($list as $i=>$item){
+            $goods = M('goods')->where(array('goods_id'=>$item['goods_id']))->find();
+            $list[$i]['goods_name'] = $goods['goods_name'];
+
+            $user = M('users')->where(array('id'=>$item['user_id']))->find();
+            $list[$i]['wx_name'] = $user['w_name'];
+        }
         $this->assign('list', $list);// 赋值数据集
         $this->assign('page', $show);// 赋值分页输出
         $this->display();
