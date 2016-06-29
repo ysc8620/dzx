@@ -31,22 +31,17 @@ window.onresize = setRootFontSize;
 
 <div class="mzt-o-item">
 <div class="search"><input type="text" placeholder="请输入编号或名称搜索" class="textInput"><input name="" type="button" value="搜索" class="butInput"></div>
+    <volist name="list" id="item">
 <div class="del_img">
-	<div class="serial">001</div>
-    <div class="imgTou"><img src="__PUBLIC__/images/tux_001.jpg" width="100%" height="100%"></div>
+	<div class="serial">{$item.id}</div>
+    <div class="imgTou"><img src="{$item.wx_pic}" width="100%" height="100%"></div>
     <div class="text">
-    <p>乐世伟积分：<span>557690</span><span class="gridItem_fl"></span></p>
-    <p><span class="icon">给TA1分</span></p>
+    <p>{$item.wx_name}积分：<span>{$item.credit}</span><span class="gridItem_fl"></span></p>
+    <p><span class="icon" onclick="credit('{$item.id}','{$item.sess_id}')">给TA1分</span></p>
     </div>
 </div>
-<div class="del_img">
-	<div class="serial">002</div>
-    <div class="imgTou"><img src="__PUBLIC__/images/tux_001.jpg" width="100%" height="100%"></div>
-    <div class="text">
-    <p>乐世伟积分：<span>557690</span><span class="gridItem_fl"></span></p>
-    <p><span class="icon">给TA1分</span></p>
-    </div>
-</div>
+</volist>
+    <div class="pages">{$page}</div>
 
 </body>
 </html>

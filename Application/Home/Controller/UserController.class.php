@@ -14,7 +14,13 @@ class UserController extends BaseController {
         $goods = M('goods')->order("weight DESC")->find();
         $this->assign('id', $id);
         $user = D('users')->get_user($id?$id:$this->openid);
+        $session_goods_id = md5($goods['id'].microtime(true));
+        session('sess_gid_'.$goods['id'],$session_goods_id);
+        $this->assign('session_goods_id', $session_goods_id);
 
+        $session_sign_id = md5($this->users['id'].microtime(true));
+        session('sess_id_'.$this->users['id'], $session_sign_id);
+        $this->assign('session_sign_id', $session_sign_id);
         $this->assign('goods', $goods);
         $this->assign('users', $user);
         $this->display();
