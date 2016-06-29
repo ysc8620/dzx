@@ -1,0 +1,52 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta content="initial-scale=1,user-scalable=no,maximum-scale=1,width=device-width" name="viewport">
+<meta content="yes" name="apple-mobile-web-app-capable">
+<meta content="black" name="apple-mobile-web-app-status-bar-style">
+<meta content="telephone=no" name="format-detection">
+<title>乐鲜生阳澄湖大闸蟹</title>
+<meta content="" name="keywords">
+<meta content="" name="description">
+<script type="text/javascript">
+/*响应式布局 start*/
+function setRootFontSize() {
+    var width = document.documentElement.clientWidth;
+    if (width > 640) { width = 640 }
+    var fontSize = (width / 320) * 50;
+    document.getElementsByTagName('html')[0].style['font-size'] = fontSize + 'px';
+}
+setRootFontSize();
+window.onresize = setRootFontSize;
+/*响应式布局 end*/
+</script>
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/css/common.css">
+    </head>
+<body>
+<div class="mzt-o-item">
+    <div class="del_img">
+        <div class="img"><img src="{$users.wx_pic}" width="100%" height="100%"></div>
+        <div class="text">
+        <p><if condition="$id gt 0">{$users.wx_name}积分<else/></if>：{$users.credit}<span class="gridItem_fl"></span>&nbsp;&nbsp;<span><if condition="$id eq '0'"><a id="">立即兑换</a></if></span></p>
+        <if condition="$id gt 0 AND $id neq $users['id']"><p><span class="icon">给TA1分</span></p></if>
+        </div>
+    </div>
+    <div class="del_text">
+        兑取奖品：</br>
+{$goods.goods_name}</br>
+活动详情：</br>
+1、所需兑奖积分{$goods.credit}积分</br>
+2、只限西安朋友兑换，领取方式请加微信（leshiwei）号</br>
+3、你每一位朋友的支持等于一积分</br>
+4、点右上角转发到朋友圈获得朋友的支持。</br>
+5、对任一用户刷单行为，本公司持有法律起起诉。</br>
+6、本活动最终解释权为乐鲜生阳澄湖大闸蟹有限公司
+  </div>
+    <div>{$goods.goods_desc}</div>
+</div>
+
+
+
+</body>
+</html>

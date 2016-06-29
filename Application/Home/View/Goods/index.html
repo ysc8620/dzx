@@ -1,0 +1,41 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta content="initial-scale=1,user-scalable=no,maximum-scale=1,width=device-width" name="viewport">
+<meta content="yes" name="apple-mobile-web-app-capable">
+<meta content="black" name="apple-mobile-web-app-status-bar-style">
+<meta content="telephone=no" name="format-detection">
+<title>乐鲜生阳澄湖大闸蟹</title>
+<meta content="" name="keywords">
+<meta content="" name="description">
+<script type="text/javascript">
+/*响应式布局 start*/
+function setRootFontSize() {
+    var width = document.documentElement.clientWidth;
+    if (width > 640) { width = 640 }
+    var fontSize = (width / 320) * 50;
+    document.getElementsByTagName('html')[0].style['font-size'] = fontSize + 'px';
+}
+setRootFontSize();
+window.onresize = setRootFontSize;
+/*响应式布局 end*/
+</script>
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/css/common.css">
+    </head>
+
+<body>
+<div class="mzt-o-item">
+    <volist name="list" id="item">
+    <div class="tpl_brand">
+        <div class="gridItem_pic"><img class="lazy-load" src="{$item.pic}" style="display: block;"></div>
+        <div class="tpl_brand_msg rposition">
+        <p class="gridItem_b_goods_name">{$item.goods_name}</p>
+        <p class="gridItem_pricebox"><span class="gridItem_fl">{$item.credit}积分</span><span><a id="{$item.id}" href="javascript:" class="icon">兑换</a></span></p>
+        </div>
+    </div>
+    </volist>
+</div>
+<div class="pages">{$page}</div>
+</body>
+</html>

@@ -4,22 +4,20 @@ use Weixin\MyWechat;
 use Home\Model\UsersModel;
 use Redis\MyRedis;
 
-class IndexController extends BaseController {
+class UserController extends BaseController {
 
     /**
      *
      */
     public function index(){
+        $id = I('id',0,'strval');
+        $goods = M('goods')->order("weight DESC")->find();
+        $this->assign('id', $id);
+        $user = D('users')->get_user($id?$id:$this->openid);
 
-        header("Content-type:text/html;charset=utf-8");
-        echo 'ok';
+        $this->assign('goods', $goods);
+        $this->assign('users', $user);
+        $this->display();
     }
 
-    /**
-     *
-     */
-    public function test(){
-        $d = new MyWechat(['appid'=>'123123','appsecret'=>'234234234']);
-
-    }
 }

@@ -113,3 +113,8 @@ body .lazy-load {
 	font-family:"微软雅黑";
 }
 .bottomBut{ width:auto; position:fixed; bottom:0px;}
+
+.pages{width:100%; text-align:center;padding:10px 0;clear:both; margin: 0 auto;}
+.pages a, .pages .current{font-size:12px; font-family:Arial; margin:0 2px; color:inherit; padding:4px 6px;}
+.pages a, .pages .current{ border:1px solid #f4f4f4; background:#ffffff; text-decoration:none}
+.pages .current, .pages a:hover{background:#dddddd; color:inherit}

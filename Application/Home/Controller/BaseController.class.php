@@ -8,6 +8,7 @@ class BaseController extends Controller {
 
     public $wechat = null;
     public $from = 0;
+    public $openid = 0;
 
     /**
      * 初始化操作
@@ -45,7 +46,7 @@ class BaseController extends Controller {
             die('No Found Weixin Option.');
         }
         $options = array(
-            'token' => $cityInfo['red_token'], //填写你设定的key
+            'token' => $cityInfo['token'], //填写你设定的key
             'encodingaeskey' => $cityInfo['encodingaeskey'], //填写加密用的EncodingAESKey
             'appid' => $cityInfo['appid'], //填写高级调用功能的app id
             'appsecret' => $cityInfo['appsecret'] //填写高级调用功能的密钥
