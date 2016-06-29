@@ -52,10 +52,10 @@ window.onresize = setRootFontSize;
     //配置微信接口
     wx.config({
         debug: false,
-        appId: "{{$onlyurl['appid']}}",
-        timestamp: "{{$onlyurl['time']}}",
-        signature: "{{$onlyurl['ticket']}}",
-        nonceStr: "{{$onlyurl['str']}}",
+        appId: "{$onlyurl['appid']}",
+        timestamp: "{$onlyurl['time']}",
+        signature: "{$onlyurl['ticket']}",
+        nonceStr: "{$onlyurl['str']}",
         jsApiList: [
             'onMenuShareTimeline',
             'onMenuShareAppMessage',
