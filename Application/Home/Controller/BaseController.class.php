@@ -45,7 +45,7 @@ class BaseController extends Controller {
         if(empty($cityInfo)){
             die('No Found Weixin Option.');
         }
-        
+
         $options = array(
             'token' => $cityInfo['token'], //填写你设定的key
             'encodingaeskey' => $cityInfo['encodingaeskey'], //填写加密用的EncodingAESKey

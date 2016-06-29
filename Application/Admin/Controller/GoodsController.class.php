@@ -33,10 +33,11 @@ class GoodsController extends BaseController
             $id = I('id',0,'intval');
             $data = $_POST;
             if($id){
-                $data['create_time'] = time();
+
                 $data['update_time'] = time();
                 $res = M('goods')->where(array('id'=>$id))->save($data);
             }else{
+                $data['create_time'] = time();
                 $data['update_time'] = time();
                 $res = M('goods')->add($data);
             }
