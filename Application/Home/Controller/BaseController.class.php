@@ -113,7 +113,7 @@ class BaseController extends Controller {
                         D('Users')->add_user($data);
                     }
 
-                    echo '';
+                    $weObj->text($msg1)->reply();
                     die();
                     break;
 
@@ -122,7 +122,8 @@ class BaseController extends Controller {
                     $openid =  $weObj->getRevFrom();
                     $data = array('is_subscribe'=>0, 'unsubcribe_time'=>time());
                     D('Users')->update_user($openid,$data);
-                    echo '0';die();
+                    echo '';
+                    die();
                     break;
                 default:
                     break;

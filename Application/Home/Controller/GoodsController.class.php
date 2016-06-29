@@ -14,12 +14,4 @@ class IndexController extends BaseController {
         header("Content-type:text/html;charset=utf-8");
         echo 'ok';
     }
-
-    /**
-     *
-     */
-    public function test(){
-        $d = new MyWechat(['appid'=>'123123','appsecret'=>'234234234']);
-
-    }
 }
