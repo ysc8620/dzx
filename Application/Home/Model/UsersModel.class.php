@@ -1,6 +1,5 @@
 <?php
 namespace Home\Model;
-use Redis\MyRedis;
 
 
 /**
@@ -11,16 +10,15 @@ use Redis\MyRedis;
  */
 class UsersModel extends BaseModel
 {
-    protected $tableName = 'users_all';
+    protected $tableName = 'users';
 
     public function add_user($data){
         $openid = $data['openid'];
 
         if(empty($openid)) return false;
 
-        $table = get_hash_table('users', $openid);
         $data['create_time'] = time();
-        return M($table)->add($data);
+        return $this->add($data);
     }
     /**
      * 获取公众号用户
@@ -29,16 +27,7 @@ class UsersModel extends BaseModel
      */
     public function get_user($openid){
         if(empty($openid)) return false;
-        $key = 't_users_'.$openid;
-        $table = get_hash_table('users', $openid);
-        $data = MyRedis::getProInstance()->new_get($key);
-        if(!$data){
-            $data = M($table)->where(array('openid'=>$openid))->find();
-            if($data){
-                MyRedis::getProInstance()->new_set($key, $data);
-            }
-        }
-
+        $data = $this->where(array('openid'=>$openid))->find();
         return $data;
     }
 
@@ -47,79 +36,38 @@ class UsersModel extends BaseModel
      * @param $openid
      * @param $data
      */
-    public function update_user($openid, $data){
-        if(empty($openid)) return false;
+    public function update_user($openid, $data)
+    {
+        if (empty($openid)) return false;
 
-        $key = 't_users_'.$openid;
-        $table = get_hash_table('users', $openid);
-        M($table)->where(array('openid'=>$openid))->save($data);
-        MyRedis::getProInstance()->delete($key);
-
+        $this->where(array('openid' => $openid))->save($data);
         return true;
     }
 
     /**
-     * 初始化用户
-     * users 表记录
-     * users_union 表记录
-     * users_brand 表记录
-     * @param $data
+     * @param $from_openid
+     * @param $to_user
      */
-    public function init_user($user){
-        try{
-            $bool = true;
-            M()->startTrans();
-            if( ! $user_openid_id = D('users')->add_user($user) ){
-                $bool = false;
-            }else{
-                /*
-               * 操作union用户
-               * `id`, `unionid`, `user_open_id`, `total_integral`, `total_amount`, `uid`, `create_time`, `upadte_time`
-               **/
-                $union = D('UsersUnion')->get_user_union($user['unionid']);
-
-                $user_union = array(
-                    'unionid' => $user['unionid'],
-                    'upadte_time' => time(),
-                );
-
-                if( ! $union ){
-                    $user_union['user_open_id'] = $user_openid_id;
-                    $user_union['city_id'] = $user['cityid'];
-                    $user_union['create_time'] = time();
-
-                    if(! $user_union_id = D('UsersUnion')->add_user_union( $user_union)){
-                        $bool = false;
-                    }else{
-                        $user_brand = array(
-                            'union_id' => $user_union_id,
-                            'create_time' => time(),
-                            'update_time' => time()
-                        );
-
-                        if( ! $user_brand_id = D('UsersBrand')->add($user_brand)){
-                            $bool = false;
-                        }
-                    }
-                }
-            }
-
-            if($bool){
-                M()->commit();
-            }else{
-                M()->rollback();
-            }
-
-        }catch (\Exception $e){ }
-        return true;
+    public function get_sign($from_openid, $to_user){
+        return M('users_sign')->where(array('openid'=>$from_openid, 'to_user_id'=>$to_user))->find();
     }
 
     /**
-     * 初始化银行账户
-     * @param $data
+     * 签到
      */
-    public function init_brand($data){
+    public function sign($data){
+        $where = array('openid'=>$data['openid'], 'to_user_id'=>$data['to_user_id']);
+        $is_have = M('users_sign')->where($where)->find();
+        if($is_have){
+            return false;
+        }
 
+        $res = M('users_sign')->add($data);
+        if($res){
+            $this->execute("UPDATE ".C('DB_PREFIX')."users SET credit=credit+1 WHERE id='{$data['to_user_id']}'");
+        }
+        return true;
     }
+
 
 }
