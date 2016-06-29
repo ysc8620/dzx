@@ -64,8 +64,9 @@ class UserController extends BaseController {
             ];
             $res = M('goods_exchange_record')->add($data);
             if($res){
-
-                $json['msg_content'] = '操作成功';
+                $credit = intval($goods['credit']);
+                M()->execute("UPDATE ".C('DB_PREFIX')."users SET credit=credit-$credit WHERE id='{$this->users['id']}'");
+                $json['msg_content'] = '兑换成功，请赶紧联系管理员吧~';
                 break;
             }else{
                 $json['msg_code'] = 1004;
@@ -109,9 +110,10 @@ class UserController extends BaseController {
                 'addtime' => time()
             ];
             $res = M('user_sign')->add($data);
+            M()->execute("UPDATE ".C('DB_PREFIX')."users SET credit=credit+1 WHERE id='{$user_id}'");
             if($res){
 
-                $json['msg_content'] = '操作成功';
+                $json['msg_content'] = '点赞成功~ 谢谢参与';
                 break;
             }else{
                 $json['msg_code'] = 1004;
