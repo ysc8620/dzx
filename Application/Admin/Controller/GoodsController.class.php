@@ -76,7 +76,7 @@ class GoodsController extends BaseController
             $list[$i]['goods_name'] = $goods['goods_name'];
 
             $user = M('users')->where(array('id'=>$item['user_id']))->find();
-            $list[$i]['wx_name'] = $user['w_name'];
+            $list[$i]['wx_name'] = $user['wx_name'];
         }
         $this->assign('list', $list);// 赋值数据集
         $this->assign('page', $show);// 赋值分页输出
