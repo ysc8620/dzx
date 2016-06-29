@@ -2,7 +2,6 @@
 namespace Home\Controller;
 use Think\Controller;
 use Org\Util\File;
-use Think\Exception;
 use Weixin\MyWechat;
 class BaseController extends Controller {
 
