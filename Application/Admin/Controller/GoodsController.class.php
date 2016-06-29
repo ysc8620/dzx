@@ -24,6 +24,9 @@ class GoodsController extends BaseController
         $this->display();
     }
 
+    /**
+     * 商品编辑
+     */
     public function edit(){
         $id = I('id',0,'intval');
         if(IS_POST){
@@ -55,6 +58,9 @@ class GoodsController extends BaseController
         $this->display();
     }
 
+    /**
+     * 兑换记录
+     */
     public function exchange(){
 
         $city = M('goods_exchange_record'); // 实例化User对象
@@ -67,6 +73,13 @@ class GoodsController extends BaseController
         $this->assign('list', $list);// 赋值数据集
         $this->assign('page', $show);// 赋值分页输出
         $this->display();
+    }
+
+    /**
+     * 兑换编辑
+     */
+    public function exedit(){
+
     }
 
 }
