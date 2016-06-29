@@ -23,6 +23,9 @@ class UserController extends BaseController {
         $this->assign('session_sign_id', $session_sign_id);
         $this->assign('goods', $goods);
         $this->assign('users', $user);
+
+        $this->getShareSign();
+
         $this->display();
     }
 

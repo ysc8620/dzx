@@ -47,6 +47,45 @@ window.onresize = setRootFontSize;
   </div>
     <div>{$goods.goods_desc}</div>
 </div>
+<script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+<script type="text/javascript">
+    //配置微信接口
+    wx.config({
+        debug: false,
+        appId: "{{$onlyurl['appid']}}",
+        timestamp: "{{$onlyurl['time']}}",
+        signature: "{{$onlyurl['ticket']}}",
+        nonceStr: "{{$onlyurl['str']}}",
+        jsApiList: [
+            'onMenuShareTimeline',
+            'onMenuShareAppMessage',
+            'onMenuShareQQ',
+            'onMenuShareWeibo',
+            'onMenuShareQZone',
+            'uploadImage',
+            'chooseImage',
+            'downloadImage'
+        ]
+    });
 
+
+    wx.ready(function () {
+        var shareConfig = {
+            title: '赶快给我投上一票吧',
+            desc: '赶快给我投上一票吧~ 积分免费领取大闸蟹！',
+            link: "{:U('user/index',array('id'=>$users.id),true,true)}",
+            imgUrl: location.origin+'/Public/images/tux_001.jpg',
+            type: 'link',
+            success: function () {}
+        };
+        wx.onMenuShareAppMessage(shareConfig);
+        wx.onMenuShareTimeline(shareConfig);
+        wx.onMenuShareQQ(shareConfig);
+        wx.onMenuShareWeibo(shareConfig);
+        wx.onMenuShareQZone(shareConfig);
+        if ($.isFunction(window.wxRead))
+            window.wxRead();
+    });
+</script>
 </body>
 </html>

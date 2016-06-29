@@ -87,7 +87,7 @@ class GoodsController extends BaseController
      * 兑换编辑
      */
     public function exedit(){
-
+        $this->display();
     }
 
 }
