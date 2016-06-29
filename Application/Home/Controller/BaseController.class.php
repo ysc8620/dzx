@@ -61,20 +61,22 @@ class BaseController extends Controller {
      */
     protected function msgReply($weObj,$msgType){
         if(true){
-            $msg1 = "玩游戏、抢红包、攒积分，聚宝商城百万豪礼，等你来抢";
+            $msg1 = "欢迎关注乐鲜生大闸蟹";
             switch($msgType){
                 case "text" :
-                    $content = $weObj->getRevContent();
-                    $msg_data = D('CityAutoReply')->get_reply_msg( 'text', $content);
-                    if($msg_data){
-                        if($msg_data['reply_type'] == 'text'){
-                            $weObj->text($msg_data['reply_content'])->reply();
-                            exit;
-                        }elseif($msg_data['reply_type'] == 'img'){
-                            $weObj->image($msg_data['reply_content'])->reply();
-                            exit;
-                        }
-                    }
+//                    $content = $weObj->getRevContent();
+//                    $msg_data = D('CityAutoReply')->get_reply_msg( 'text', $content);
+//                    if($msg_data){
+//                        if($msg_data['reply_type'] == 'text'){
+//                            $weObj->text($msg_data['reply_content'])->reply();
+//                            exit;
+//                        }elseif($msg_data['reply_type'] == 'img'){
+//                            $weObj->image($msg_data['reply_content'])->reply();
+//                            exit;
+//                        }
+//                    }
+                    echo '';
+                    exit;
                     break;
 
                 case "subscribe" :
@@ -82,7 +84,6 @@ class BaseController extends Controller {
                     $user = D('Users')->get_user($openid);
                     session('openid', $openid);
 
-                    cookie("FUserId", $openid, time() + 1800);
                     //设置一个虚拟的设备id，不然签到无法顺利插入数据
                     if($user){
                         $data = array('is_subscribe'=>1, 'subcribe_time'=>time());
@@ -97,7 +98,6 @@ class BaseController extends Controller {
                         );
 
                         if ($uinfo) {
-                            $data['unionid'] = $uinfo['unionid'];
                             $data['wx_name'] = $uinfo['nickname'];
                             $data['wx_pic'] = $uinfo['headimgurl'];
                             $data['wx_sex'] = $uinfo['sex'];
@@ -110,12 +110,10 @@ class BaseController extends Controller {
 
                         // subscribe, openid,nickname,sex,language,city,province,country,headimgurl,subscribe_time,unionid,remark,groupid
                         // 初始化用户数据 包括 users 记录, users_union记录 , users_brand记录
-                        D('Users')->init_user($data);
+                        D('Users')->add_user($data);
                     }
 
-                    $msg_data = D('CityAutoReply')->get_reply_msg( 'event', 'subscribe');
-
-                    $weObj->text($msg_data?$msg_data['reply_content']:$msg1)->reply();
+                    echo '';
                     die();
                     break;
 
@@ -124,6 +122,7 @@ class BaseController extends Controller {
                     $openid =  $weObj->getRevFrom();
                     $data = array('is_subscribe'=>0, 'unsubcribe_time'=>time());
                     D('Users')->update_user($openid,$data);
+                    echo '0';die();
                     break;
                 default:
                     break;
@@ -166,7 +165,6 @@ class BaseController extends Controller {
         /*******************初始化******/
         $wechat = $this->initWechat();
 
-        $FUserId = cookie('FUserId');
         $openid = session('openid');
 
 
@@ -175,13 +173,12 @@ class BaseController extends Controller {
                  */
                 //if (empty($FUserId) || !isset($_SESSION["openid".$type]))
                 //if (empty($FUserId) || !session("openid".$type))
-                if(true)
+                if(empty($openid) )
                 {
                     //用户授权
                     $info = $this->authorize();
                     if ($info) {
                         $FUserId = $info['openid'];
-                        cookie("FUserId" , $info['openid'], time() + 1800);
                         //设置一个虚拟的设备id，不然签到无法顺利插入数据
                         // $_SESSION["openid".$type] = $FUserId;
                         session("openid", $FUserId);
@@ -200,7 +197,6 @@ class BaseController extends Controller {
                         $user = [
                             'openid' =>$openid,
                             'wx_name' =>$info['nickname'],
-                            'unionid' =>$info['unionid'],
                             'wx_sex' =>$info['sex'],
                             'wx_city' =>$info['city'],
                             'wx_province'=>$info['province'],
@@ -212,7 +208,7 @@ class BaseController extends Controller {
                             D('Users')->update_user($openid, $user);
                         }else{
                             // 初始化用户数据 包括 users 记录, users_union记录 , users_brand记录
-                            D('Users')->init_user($user);
+                            D('Users')->add_user($user);
                         }
 
                     } else {
@@ -221,7 +217,7 @@ class BaseController extends Controller {
                     }
                 }
 
-        if (empty($FUserId)) {
+        if (empty($openid)) {
             header("Content-type: text/html; charset=utf-8");
             $context = "<html><script>alert('" . $error . "')</script></html>";
             exit($context);
