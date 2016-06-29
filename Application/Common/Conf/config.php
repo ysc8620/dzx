@@ -37,12 +37,6 @@ $config = array(
     'TAGLIB_BUILD_IN' => 'cx',//芝麻乐标签库
     //'TAGLIB_PRE_LOAD' => '',//芝麻乐命名范围
 
-    'weixin' => array(
-        'red_token' =>'',
-        'encodingaeskey' => '',
-        'appid' => '',
-        'appsecret'=>''
-    )
 
 );
 
