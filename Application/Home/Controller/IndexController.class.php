@@ -16,7 +16,7 @@ class IndexController extends BaseController {
 
         $show = $Page->show();// 分页显示输出
         // 进行分页数据查询 注意limit方法的参数要使用Page类的属性
-        $list = $city->order('create_time DESC')->limit($Page->firstRow . ',' . $Page->listRows)->select();
+        $list = $city->order('credit DESC')->limit($Page->firstRow . ',' . $Page->listRows)->select();
         foreach($list as $i=>$item){
             $session_id = md5($item['id'].microtime(true));
             session('sess_id_'.$item['id'], $session_id);
